@@ -1,0 +1,3087 @@
+{
+  "info": {
+    "_postman_id": "3045d4c5-1f30-483b-ba27-1c25e2104043",
+    "name": "Team_05",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "33496989",
+    "_collection_link": "https://go.postman.co/collection/33496989-3045d4c5-1f30-483b-ba27-1c25e2104043?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "User_Login",
+      "item": [
+        {
+          "name": "login",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "// Check token safely\r",
+                  "let token = response.token || response.access_token;\r",
+                  "\r",
+                  "if (token) {\r",
+                  "    pm.environment.set(\"token\", token);\r",
+                  "    console.log(\"✅ Token saved:\", token);\r",
+                  "} else {\r",
+                  "    console.log(\"❌ Token not found in response\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\n{\n  \"userLoginEmailId\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}\n\n\n"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Chaining Controller",
+      "item": [
+        {
+          "name": "Creating Staff User_UC",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "//Schema validation\r",
+                  "\r",
+                  "const schema = {\r",
+                  "    \"type\": \"object\",\r",
+                  "    \"properties\": {\r",
+                  "        \"user\": {\r",
+                  "            \"type\": \"object\",\r",
+                  "            \"properties\": {\r",
+                  "                \"userId\": { \"type\": \"string\" },\r",
+                  "                \"userFirstName\": { \"type\": \"string\" },\r",
+                  "                \"userLastName\": { \"type\": \"string\" },\r",
+                  "                \"userMiddleName\": { \"type\": \"string\" },\r",
+                  "                \"userPhoneNumber\": { \"type\": \"string\" },\r",
+                  "                \"userLocation\": { \"type\": \"string\" },\r",
+                  "                \"userTimeZone\": { \"type\": \"string\" },\r",
+                  "                \"userLinkedinUrl\": { \"type\": \"string\" },\r",
+                  "                \"userEduUg\": { \"type\": \"string\" },\r",
+                  "                \"userEduPg\": { \"type\": \"string\" },\r",
+                  "                \"userComments\": { \"type\": \"string\" },\r",
+                  "                \"userVisaStatus\": { \"type\": \"string\" },\r",
+                  "                \"userLoginEmail\": { \"type\": \"string\" }\r",
+                  "            },\r",
+                  "            \"required\": [\"userId\"]\r",
+                  "        },\r",
+                  "        \"roles\": {\r",
+                  "            \"type\": \"array\",\r",
+                  "            \"items\": {\r",
+                  "                \"type\": \"object\",\r",
+                  "                \"properties\": {\r",
+                  "                    \"roleId\": { \"type\": \"string\" },\r",
+                  "                    \"userRoleStatus\": { \"type\": \"string\" }\r",
+                  "                },\r",
+                  "                \"required\": [\"roleId\"]\r",
+                  "            }\r",
+                  "        }\r",
+                  "    },\r",
+                  "    \"required\": [\"user\", \"roles\"]\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Validate schema\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(schema);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "// userId \r",
+                  "let userId = response.userId || (response.user && response.user.userId);\r",
+                  "pm.environment.set(\"userId\", userId);\r",
+                  "console.log(\"✅userId:\", userId);\r",
+                  "\r",
+                  "// roleId\r",
+                  "let roleId = response.roles?.[0]?.roleId;\r",
+                  "pm.environment.set(\"roleId\", roleId);\r",
+                  "console.log(\"✅roleId:\", roleId);\r",
+                  "\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "let phone = \"+91 \" + Math.floor(1000000000 + Math.random() * 9000000000);\r",
+                  "pm.environment.set(\"phoneUnique\", phone);\r",
+                  "\r",
+                  "let uniqueEmail = \"testuser\" + Date.now() + \"@gmail.com\";\r",
+                  "pm.environment.set(\"uniqueEmail\", uniqueEmail);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userComments\": \"{{userComments}}\",\n  \"userEduPg\": \"{{userEduPg}}\",\n  \"userEduUg\": \"{{userEduUg}}\",\n  \"userFirstName\": \"{{userFirstName}}\",\n  \"userLastName\": \"{{userLastName}}\",\n  \"userMiddleName\": \"{{userMiddleName}}\",\n  \"userPhoneNumber\": \"{{phoneUnique}}\",\n  \"userLinkedinUrl\": \"{{userLinkedinUrl}}\",\n  \"userLocation\": \"{{userLocation}}\",\n  \"userLogin\": {\n    \"loginStatus\": \"{{loginStatus}}\",\n    \"userLoginEmail\": \"{{uniqueEmail}}\"\n  },\n  \"userRoleMaps\": [\n    {\n      \"roleId\": \"R02\",\n      \"userRoleStatus\": \"{{userRoleStatus}}\"\n    }\n  ],\n  \"userTimeZone\": \"{{userTimeZone}}\",\n  \"userVisaStatus\": \"{{userVisaStatus}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/roleStatus",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "roleStatus"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Creating Student User_UC",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const schema = {\r",
+                  "    \"type\": \"object\",\r",
+                  "    \"properties\": {\r",
+                  "        \"user\": {\r",
+                  "            \"type\": \"object\",\r",
+                  "            \"properties\": {\r",
+                  "                \"userId\": { \"type\": \"string\" },\r",
+                  "                \"userFirstName\": { \"type\": \"string\" },\r",
+                  "                \"userLastName\": { \"type\": \"string\" },\r",
+                  "                \"userMiddleName\": { \"type\": \"string\" },\r",
+                  "                \"userPhoneNumber\": { \"type\": \"string\" },\r",
+                  "                \"userLocation\": { \"type\": \"string\" },\r",
+                  "                \"userTimeZone\": { \"type\": \"string\" },\r",
+                  "                \"userLinkedinUrl\": { \"type\": \"string\" },\r",
+                  "                \"userEduUg\": { \"type\": \"string\" },\r",
+                  "                \"userEduPg\": { \"type\": \"string\" },\r",
+                  "                \"userComments\": { \"type\": \"string\" },\r",
+                  "                \"userVisaStatus\": { \"type\": \"string\" },\r",
+                  "                \"userLoginEmail\": { \"type\": \"string\" }\r",
+                  "            },\r",
+                  "            \"required\": [\"userId\"]\r",
+                  "        },\r",
+                  "        \"roles\": {\r",
+                  "            \"type\": \"array\",\r",
+                  "            \"items\": {\r",
+                  "                \"type\": \"object\",\r",
+                  "                \"properties\": {\r",
+                  "                    \"roleId\": { \"type\": \"string\" },\r",
+                  "                    \"userRoleStatus\": { \"type\": \"string\" }\r",
+                  "                },\r",
+                  "                \"required\": [\"roleId\"]\r",
+                  "            }\r",
+                  "        }\r",
+                  "    },\r",
+                  "    \"required\": [\"user\", \"roles\"]\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Validate schema\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(schema);\r",
+                  "});\r",
+                  "\r",
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "// userId \r",
+                  "let userId = response.userId || (response.user && response.user.userId);\r",
+                  "pm.environment.set(\"S_userId\", userId);\r",
+                  "console.log(\"✅ S_userId:\", userId);\r",
+                  "\r",
+                  "// roleId\r",
+                  "let roleId = response.roles?.[0]?.roleId;\r",
+                  "pm.environment.set(\"S_roleId\", roleId);\r",
+                  "console.log(\"✅ S_roleId:\", roleId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "let phone = \"+91 \" + Math.floor(1000000000 + Math.random() * 9000000000);\r",
+                  "pm.environment.set(\"phoneUnique\", phone);\r",
+                  "\r",
+                  "let uniqueEmail = \"testuser\" + Date.now() + \"@gmail.com\";\r",
+                  "pm.environment.set(\"uniqueEmail\", uniqueEmail);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userComments\": \"{{userComments}}\",\n  \"userEduPg\": \"{{userEduPg}}\",\n  \"userEduUg\": \"{{userEduUg}}\",\n  \"userFirstName\": \"{{userFirstName}}\",\n  \"userLastName\": \"{{userLastName}}\",\n  \"userMiddleName\": \"{{userMiddleName}}\",\n  \"userPhoneNumber\": \"{{phoneUnique}}\",\n  \"userLinkedinUrl\": \"{{userLinkedinUrl}}\",\n  \"userLocation\": \"{{userLocation}}\",\n  \"userLogin\": {\n    \"loginStatus\": \"{{loginStatus}}\",\n    \"userLoginEmail\": \"{{uniqueEmail}}\"\n  },\n  \"userRoleMaps\": [\n    {\n      \"roleId\": \"R03\",\n      \"userRoleStatus\": \"{{userRoleStatus}}\"\n    }\n  ],\n  \"userTimeZone\": \"{{userTimeZone}}\",\n  \"userVisaStatus\": \"{{userVisaStatus}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/roleStatus",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "roleStatus"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create programId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "// programId\r",
+                  "let programId = response.programId;\r",
+                  "pm.environment.set(\"programId\", programId);\r",
+                  "console.log(\"✅ programId:\", programId);\r",
+                  "\r",
+                  "// ProgramName\r",
+                  "let ProgramName = response.ProgramName;\r",
+                  "pm.environment.set(\"ProgramName\", ProgramName);\r",
+                  "console.log(\"✅ ProgramName:\", ProgramName);\r",
+                  "\r",
+                  "\r",
+                  "const schema = {\r",
+                  "    \"type\": \"object\",\r",
+                  "    \"properties\": {\r",
+                  "        \"programId\": { \"type\": \"integer\" },\r",
+                  "        \"programName\": { \"type\": \"string\" },\r",
+                  "        \"programDescription\": { \"type\": \"string\" },\r",
+                  "        \"programStatus\": { \"type\": \"string\" }\r",
+                  "    },\r",
+                  "    \"required\": [\"programId\", \"programName\"]\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Validate Program Schema\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(schema);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"programDescription\": \"{{programDescription}}\",\r\n\"programName\": \"{{programName_D}}\",\r\n\"programStatus\": \"{{programStatus}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/saveprogram",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "saveprogram"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Batch ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "// batchId\r",
+                  "let batchId = response.batchId;\r",
+                  "pm.environment.set(\"batchId\", batchId);\r",
+                  "console.log(\"✅ batchId:\", batchId);\r",
+                  "\r",
+                  "// batchName\r",
+                  "let batchName = response.batchName;\r",
+                  "pm.environment.set(\"batchName\", batchName);\r",
+                  "console.log(\"✅ batchName:\", batchName);\r",
+                  "\r",
+                  "\r",
+                  "const schema = {\r",
+                  "    \"type\": \"object\",\r",
+                  "    \"properties\": {\r",
+                  "        \"batchId\": { \"type\": \"integer\" },\r",
+                  "        \"batchName\": { \"type\": \"string\" },\r",
+                  "        \"batchDescription\": { \"type\": \"string\" },\r",
+                  "        \"batchNoOfClasses\": { \"type\": \"integer\" },\r",
+                  "        \"batchStatus\": { \"type\": \"string\" },\r",
+                  "        \"programId\": { \"type\": \"integer\" },\r",
+                  "        \"programName\": { \"type\": \"string\" }\r",
+                  "    },\r",
+                  "    \"required\": [\"batchId\", \"batchName\", \"programId\"]\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Validate Batch Schema\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(schema);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"batchDescription\": \"{{batchDescription}}\",\r\n    \"batchName\": \"{{batchName_D}}\",\r\n    \"batchNoOfClasses\":{{batchNoOfClasses}},\r\n    \"batchStatus\":\"{{batchStatus}}\",\r\n    \"programId\":{{programId}},\r\n    \"programName\":\"{{programName_D}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/batches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "batches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Class Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "let csId = response.csId;\r",
+                  "\r",
+                  "pm.environment.set(\"classId\", csId);\r",
+                  "\r",
+                  "console.log(\"✅ classId:\", csId);\r",
+                  "\r",
+                  "const schema = {\r",
+                  "    \"type\": \"object\",\r",
+                  "    \"properties\": {\r",
+                  "        \"classId\": { \"type\": \"integer\" },\r",
+                  "        \"batchId\": { \"type\": \"integer\" },\r",
+                  "        \"batchName\": { \"type\": \"string\" },\r",
+                  "        \"classComments\": { \"type\": \"string\" },\r",
+                  "        \"classDate\": { \"type\": \"string\" },\r",
+                  "        \"classDescription\": { \"type\": \"string\" },\r",
+                  "        \"classNo\": { \"type\": \"integer\" },\r",
+                  "        \"classNotes\": { \"type\": \"string\" },\r",
+                  "        \"classRecordingPath\": { \"type\": \"string\" },\r",
+                  "        \"classStaffId\": { \"type\": \"string\" },\r",
+                  "        \"classTopic\": { \"type\": \"string\" },\r",
+                  "        \"classScheduledDates\": {\r",
+                  "            \"type\": \"array\",\r",
+                  "            \"items\": { \"type\": \"string\" }\r",
+                  "        }\r",
+                  "    },\r",
+                  "    \"required\": [\"batchId\", \"classStaffId\"]\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Validate Class Schema\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(schema);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"batchId\": \"{{batchId}}\",\r\n\"batchName\": \"{{batchName}}\",\r\n\"classComments\": \"{{classComments}}\",\r\n\"classDate\": \"{{classDate}}\",\r\n\"classDescription\": \"{{classDescription}}\",\r\n\"classNo\": \"{{classNo}}\",\r\n\"classNotes\": \"{{classNotes}}\",\r\n\"classRecordingPath\": \"{{classRecordingPath}}\",\r\n\"classStaffId\": \"{{userId}}\",\r\n\"classTopic\": \"{{classTopic}}\",\r\n\"classScheduledDates\": [\r\n\"{{classScheduledDates}}\"\r\n]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/CreateClassSchedule",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "CreateClassSchedule"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User RoleId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Role update success\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.include(\"Role Id Updated\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userRoleList\": [\r\n    {\r\n      \"roleId\": \"{{roleId_D}}\",\r\n      \"userRoleStatus\": \"{{userRoleStatus}}\"\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/roleId/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "roleId",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User_Staff Role Program Batch Status_UC",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"programId\":{{programId}}, \r\n\"roleId\": \"R02\",\r\n \"userRoleProgramBatches\": [ \r\n    { \"batchId\": {{batchId}},\r\n     \"userRoleProgramBatchStatus\": \"{{userRoleProgramBatchStatus}}\" }\r\n      ]\r\n      \r\n       }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/roleProgramBatchStatus/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "roleProgramBatchStatus",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User_Student Role Program Batch Status_UC Copy",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"programId\":{{programId}}, \r\n\"roleId\": \"R03\",\r\n \"userRoleProgramBatches\": [ \r\n    { \"batchId\": {{batchId}},\r\n     \"userRoleProgramBatchStatus\": \"{{userRoleProgramBatchStatus}}\" }\r\n      ]\r\n      \r\n       }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/roleProgramBatchStatus/{{S_userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "roleProgramBatchStatus",
+                "{{S_userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "created user by userid",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AllUpcomingClassesParticularStudent_ClassController Copy",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upcomingClasses/{{S_userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upcomingClasses",
+                "{{S_userId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Get User POSITIVE",
+      "item": [
+        {
+          "name": "Get All Users_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Active User_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/activeUsers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "activeUsers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Emails of All Users with Active Status_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fetch-emails",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "fetch-emails"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Roles_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Information by UserId_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users with Roles_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Gets Count of Active and Inactive Users. Unless role id is specified, gets all type of users_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/byStatus",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "byStatus"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Gets Users for Program_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/programs/{{programId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "programs",
+                "{{programId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Gets Users by RoleId_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/roles/{{roleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "roles",
+                "{{roleId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Gets User by Program Batches_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/programBatch/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "programBatch",
+                "{{batchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users with Facets/Filters Gets Users by roleId V2_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v2/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User BatchId by UserId_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/user/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "user",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Details by Id_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/details/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "details",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "GET Program Positive",
+      "item": [
+        {
+          "name": "Get All Programs_PC",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/allPrograms",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "allPrograms"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Program by ID_PC",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/programs/{{programId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "programs",
+                "{{programId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Program by Users_PC",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/allProgramsWithUsers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "allProgramsWithUsers"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Program BC Positive GET_BC",
+      "item": [
+        {
+          "name": "Get All Batches_BC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/batches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "batches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Batch by BatchId_BC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/batches/batchId/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "batches",
+                "batchId",
+                "{{batchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by Batch Name_BC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/batches/batchName/{{batchName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "batches",
+                "batchName",
+                "{{batchName}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by ProgramId_BC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/batches/program/{{programId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "batches",
+                "program",
+                "{{programId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "GET_ClassController_positive",
+      "item": [
+        {
+          "name": "Get Class Recordings by Class Id_classcontroller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classRecordings/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classRecordings",
+                "{{classId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all classes_classController",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/allClasses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "allClasses"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all recordings_classcontroller",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\n{\n  \"userLoginEmailId\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classrecordings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classrecordings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all classes by staffid_classcontroller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classesByStaff/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classesByStaff",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Classes by Class Topic_classcontroller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/{{classTopic}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classes",
+                "{{classTopic}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Class Details by csId_classcontroller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/class/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "class",
+                "{{classId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all classes by batchid_classcontroller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classesbyBatch/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classesbyBatch",
+                "{{batchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AllUpcomingClassesParticularStudent_ClassController",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upcomingClasses/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upcomingClasses",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Update User POSITIVE",
+      "item": [
+        {
+          "name": "Update User_UC",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "let phone = \"+91 \" + Math.floor(1000000000 + Math.random() * 9000000000);\r",
+                  "pm.environment.set(\"phoneUnique\", phone);\r",
+                  "\r",
+                  "let uniqueEmail = \"testuser\" + Date.now() + \"@gmail.com\";\r",
+                  "pm.environment.set(\"uniqueEmail\", uniqueEmail);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userComments\": \"{{userComments}}\",\r\n  \"userEduPg\": \"{{userEduPg}}\",\r\n  \"userEduUg\": \"{{userEduUg}}\",\r\n  \"userFirstName\": \"{{Update_userFirstName}}\",\r\n  \"userId\": \"{{userId}}\",\r\n  \"userLastName\": \"{{userLastName}}\",\r\n  \"userMiddleName\": \"{{userMiddleName}}\",\r\n  \"userLinkedinUrl\": \"{{userLinkedinUrl}}\",\r\n  \"userLocation\": \"{{userLocation}}\",\r\n  \"userLoginEmail\": \"{{uniqueEmail}}\",\r\n  \"userPhoneNumber\": \"{{phoneUnique}}\",\r\n  \"userTimeZone\": \"{{userTimeZone}}\",\r\n  \"userVisaStatus\": \"{{userVisaStatus}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Login Status_UC",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "let uniqueEmail = \"testuser\" + Date.now() + \"@gmail.com\";\r",
+                  "pm.environment.set(\"uniqueEmail\", uniqueEmail);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"userLoginEmail\": \"{{uniqueEmail}}\",\r\n\"loginStatus\": \"{{loginStatus}}\",\r\n\"status\": \"{{Update_status}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/userLogin/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "userLogin",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PUT Program positive",
+      "item": [
+        {
+          "name": "Update Program By ProgramName_PC",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {}
+          },
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"programName\": \"{{programName_D}}\",\r\n    \"programDescription\": \"{{Update_programDescription}}\",\r\n    \"programStatus\": \"{{programStatus}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/program/{{ProgramName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "program",
+                "{{ProgramName}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Program by ProgramID_PC",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"programName\": \"{{programName_D}}\",\r\n    \"programDescription\": \"{{Update_programDescription}}\",\r\n    \"programStatus\": \"{{programStatus}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/putprogram/{{programId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "putprogram",
+                "{{programId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Program BC Positive PUT_BC",
+      "item": [
+        {
+          "name": "Update by batch id_BC",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"batchDescription\": \"{{batchDescription}}\",\r\n\"batchId\": \"{{batchId}}\",\r\n\"batchName\": \"{{batchName_D}}\",\r\n\"batchNoOfClasses\": \"{{batchNoOfClasses}}\",\r\n\"batchStatus\":\"{{batchStatus}}\",\r\n\"programId\": \"{{programId}}\",\r\n\"programName\": \"{{programName_D}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/batches/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "batches",
+                "{{batchId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "update_ClassController_positive",
+      "item": [
+        {
+          "name": "UpdateClassSchedulebyClassId_ClassController",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"batchId\": \"{{batchId}}\",\r\n\"classNo\": \"{{classNo}}\",\r\n\"classDate\": \"{{classDate}}\",\r\n\"classTopic\": \"{{classTopic}}\",\r\n\"classStatus\": \"{{classStatus}}\",\r\n\"classStaffId\": \"{{userId}}\",\r\n\"classDescription\": \"{{classDescription}}\",\r\n\"classComments\": \"{{classComments}}\",\r\n\"classNotes\": \"{{classNotes}}\",\r\n\"classRecordingPath\": \"{{Updating_Recordpath}}\",\r\n\"batchName\": \"{{batchName}}\",\r\n\"classScheduledDates\": [\"{{classScheduledDates}}\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/updateClass/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "updateClass",
+                "{{classId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateClassRecordingpath_ClassController",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"classRecordingPath\": \"{{Updating_Recordpath}}\",\r\n\"csId\": 0\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/updateClassrecording/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "updateClassrecording",
+                "{{classId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UserLogin_POST_Positive",
+      "item": [
+        {
+          "name": "ResetPassword_UL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userLoginEmailId\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/resetPassword.",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "resetPassword."
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password Confirm Email_UL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userLoginEmailId\": \"{{username}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login/forgotpassword/confirmEmail.",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login",
+                "forgotpassword",
+                "confirmEmail."
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UserLogin_POST_Negative",
+      "item": [
+        {
+          "name": "ConfirmEmailNegative_UL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJUZWFtMDA1QGdtYWlsLmNvbSIsImlhdCI6MTc3NjU2NDE3NSwiZXhwIjoxNzc2NTcxMzc1fQ.GLRBryhTlv7QaQXqKcH0TuWTr9eNjQ9qnsxGQlrLHWWJ2YflOCssuu3u2woXvAZNkaq_uGJE6BVaHlYODO2xeg"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userLoginEmailId\": \"invalid@gmai\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login/forgotpassword/confirmEmail",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login",
+                "forgotpassword",
+                "confirmEmail"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "InvalidUserlogin_UL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJUZWFtMDA1QGdtYWlsLmNvbSIsImlhdCI6MTc3NjU2MjI4MywiZXhwIjoxNzc2NTkxMDgzfQ.QEJvx08IwYpCYZK3bGsQhCWHJeGetHxsMslDVSk-cTDkLT1UU-8mlTwHnJvQ2E6n4LzRkgf4GQvXvgGcgKazoQ"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\n{\n  \"userLoginEmailId\": \"Inavalid@\",\n  \"password\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PasswordResetFail_UL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJUZWFtMDA1QGdtYWlsLmNvbSIsImlhdCI6MTc3NjU2MjI4MywiZXhwIjoxNzc2NTkxMDgzfQ.QEJvx08IwYpCYZK3bGsQhCWHJeGetHxsMslDVSk-cTDkLT1UU-8mlTwHnJvQ2E6n4LzRkgf4GQvXvgGcgKazoQ"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userLoginEmailId\": \"abdcf@gmai\",\n  \"password\": \"Apple456@\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/lms/resetPassword",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lms",
+                "resetPassword"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Delete (all modules)",
+      "item": [
+        {
+          "name": "Delete User_UC",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete programid",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/deletebyprogid/{{programId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "deletebyprogid",
+                "{{programId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Batch by BatchId_BC",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/batches/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "batches",
+                "{{batchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteclassbyClassId_ClassController",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/deleteByClass/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "deleteByClass",
+                "{{classId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Get User NEGATIVE",
+      "item": [
+        {
+          "name": "Get All Users_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Active User_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/activeUsers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "activeUsers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Emails of All Users with Active Status_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fetch-emails",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "fetch-emails"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Roles_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Information by UserId_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users with Roles_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Gets Count of Active and Inactive Users. Unless role id is specified, gets all type of users_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/byStatus",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "byStatus"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Gets User by Program Batches_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/programBatch/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "programBatch",
+                "{{batchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Gets Users for Program_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/programs/{{programId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "programs",
+                "{{programId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Gets Users by RoleId_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/roles/{{roleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "roles",
+                "{{roleId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users with Facets/Filters Gets Users by roleId V2_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v2/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User BatchId by UserId_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/user/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "user",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Details by Id_UC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/details/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "details",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "GET_ClassController_negative",
+      "item": [
+        {
+          "name": "GetClassRecordingsbyClassIdIvalidEP_classcontroller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classRecording/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classRecording",
+                "{{classId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetClassRecordingsbyClassNoAut_classcontroller Copy",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classRecordings/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classRecordings",
+                "{{classId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getallclassesInvalidEP_classController",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/allClasse",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "allClasse"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getallclassesNoAut_classController",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/allClasses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "allClasses"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getallrecordingsInvalidEP_classcontroller",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\n{\n  \"userLoginEmailId\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classrecording",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classrecording"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getallrecordingsNoAut_classcontroller",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\n{\n  \"userLoginEmailId\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classrecordings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classrecordings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getallclassesbystaffidInvalidEP_classcontroller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classesByStaf/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classesByStaf",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getallclassesbystaffNoAut_classcontroller",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classesByStaff/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classesByStaff",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllClassesbyClassTopicInvalidEP_classcontroller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classe/{{classTopic}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classe",
+                "{{classTopic}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllClassesbyClassTopicNoAut_classcontroller",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/{{classTopic}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classes",
+                "{{classTopic}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetClassDetailsbycsIdInvalidEP_classcontroller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/clas/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "clas",
+                "{{classId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetClassDetailsbycsIdNoAuth_classcontroller",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/class/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "class",
+                "{{classId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getallclassesbybatchidInvalidEP_classcontroller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classesbyBatc/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classesbyBatc",
+                "{{batchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getallclassesbybatchNoAuth_classcontroller",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classesbyBatch/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "classesbyBatch",
+                "{{batchId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Update User NEGATIVE",
+      "item": [
+        {
+          "name": "Update User_UC",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"userComments\": \"{{userComments}}\",\r\n\"userEduPg\": \"{{userEduPg}}\",\r\n\"userEduUg\": \"{{userEduUg}}\",\r\n\"userFirstName\": \"{{userFirstName}}\",\r\n\"userId\": \"{{userId}}\",\r\n\"userLastName\": \"{{userLastName}}\",\r\n\"userMiddleName\": \"{{userMiddleName}}\",\r\n\"userLinkedinUrl\": \"{{userLinkedinUrl}}\",\r\n\"userLocation\": \"{{userLocation}}\",\r\n\"userLoginEmail\":”{{userLoginEmail}}“,\r\n\"userPhoneNumber\":{{userPhoneNumber}},\r\n\"userTimeZone\": \"{{userTimeZone}}\",\r\n\"userVisaStatus\": \"{{userVisaStatus}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Role Program Batch Status_UC",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/roleProgramBatchStatus/{userId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "roleProgramBatchStatus",
+                "{userId}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Login Status_UC",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/userLogin/{userId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "userLogin",
+                "{userId}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "POST User NEGATIVE",
+      "item": [
+        {
+          "name": "Creating User_UC",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userComments\": \"{{userComments}}\",\n  \"userEduPg\": \"{{userEduPg}}\",\n  \"userEduUg\": \"{{userEduUg}}\",\n  \"userFirstName\": \"{{userFirstName}}\",\n  \"userLastName\": \"{{userLastName}}\",\n  \"userMiddleName\": \"{{userMiddleName}}\",\n  \"userPhoneNumber\": \"{{userPhoneNumber}}\",\n  \"userLinkedinUrl\": \"{{userLinkedinUrl}}\",\n  \"userLocation\": \"{{userLocation}}\",\n  \"userLogin\": {\n    \"loginStatus\": \"{{loginStatus}}\",\n    \"userLoginEmail\": \"{{userLoginEmail}}\"\n  },\n  \"userRoleMaps\": [\n    {\n      \"roleId\": \"{{roleId}}\",\n      \"userRoleStatus\": \"{{userRoleStatus}}\"\n    }\n  ],\n  \"userTimeZone\": \"{{userTimeZone}}\",\n  \"userVisaStatus\": \"{{userVisaStatus}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/roleStatus",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "roleStatus"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Update_ClassController_negative",
+      "item": [
+        {
+          "name": "UpdateClassRecordingpathInvalidEP_ClassController",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"classRecordingPath\": \"{{Updating_Recordpath}}\",\r\n\"csId\": 0\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/updateClassrecording/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "updateClassrecording",
+                "{{classId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateClassSchedulebyClassIdInvalidEP_ClassController",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"batchId\": \"{{batchId}}\",\r\n\"classNo\": \"{{classNo}}\",\r\n\"classDate\": \"{{classDate}}\",\r\n\"classTopic\": \"{{classTopic}}\",\r\n\"classStatus\": \"{{classStatus}}\",\r\n\"classStaffId\": \"{{userId}}\",\r\n\"classDescription\": \"{{classDescription}}\",\r\n\"classComments\": \"{{classComments}}\",\r\n\"classNotes\": \"{{classNotes}}\",\r\n\"classRecordingPath\": \"{{classRecordingPath}}\",\r\n\"batchName\": \"{{batchName}}\",\r\n\"classScheduledDates\": [\"{{classScheduledDates}}\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/updateClas/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "updateClas",
+                "{{classId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Post_ClassController_Negative",
+      "item": [
+        {
+          "name": "CreateClassScheduleInvalid_classController",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\r\n\"batchName\": \"{{batchname}}\",\r\n\"classComments\": \"{{classComments}}\",\r\n\"classDate\": \"{{classDate}}\",\r\n\"classDescription\": \"{{classDescription}}\",\r\n\"classNo\": \"{{classNo}}\",\r\n\"classNotes\": \"{{classNotes}}\",\r\n\"classRecordingPath\": \"{{classRecordingPath}}\",\r\n\"classStaffId\": \"{{classStaffId}}\",\r\n\"classTopic\": \"{{classTopic}}\",\r\n\"classScheduledDates\": [\r\n\"{{classScheduledDates}}\"\r\n]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/CreateClassSchedule",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "CreateClassSchedule"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateClassSchedule_noAuth_classcontroller",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"batchId\": \"{{batchId}}\",\r\n\"batchName\": \"{{batchname}}\",\r\n\"classComments\": \"{{classComments}}\",\r\n\"classDate\": \"{{classDate}}\",\r\n\"classDescription\": \"{{classDescription}}\",\r\n\"classNo\": \"{{classNo}}\",\r\n\"classNotes\": \"{{classNotes}}\",\r\n\"classRecordingPath\": \"{{classRecordingPath}}\",\r\n\"classStaffId\": \"{{classStaffId}}\",\r\n\"classTopic\": \"{{classTopic}}\",\r\n\"classScheduledDates\": [\r\n\"{{classScheduledDates}}\"\r\n]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/CreateClassSchedule",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "CreateClassSchedule"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Delete_ClassController_Negative",
+      "item": [
+        {
+          "name": "DeleteclassbyClassIdInvalidEP_ClassController",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/deleteByClas/{{classId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "deleteByClas",
+                "{{classId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Batch_Controller_ Negative",
+      "item": [
+        {
+          "name": "Get All Batches_BC_Incorrectendpoint_BC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/batche",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "batche"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Batches_BC_Noendpoint_BC",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Batch by BatchId_BC_Wrongrequesttyp_BC",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/batches/batchId/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "batches",
+                "batchId",
+                "{{batchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update by batch id_BC_No.ofclass_AnyWrongValue_BC",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"batchDescription\": \"{{batchDescription}}\",\r\n\"batchId\": \"{{batchId}}\",\r\n\"batchName\": \"{{batchName_D}}\",\r\n\"batchNoOfClasses\": \"{{Updated_batchNoOfClasses}}\",\r\n\"batchStatus\":\"{{batchStatus}}\",\r\n\"programId\": \"{{programId}}\",\r\n\"programName\": \"{{programName}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/batches/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "batches",
+                "{{batchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by Batch Name_BC_NoAuth_BC",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/batches/batchName/ {{batchNames}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "batches",
+                "batchName",
+                " {{batchNames}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "LOGOUT",
+      "item": [
+        {
+          "name": "LogoutLMS_UL",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/logoutlms.",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "logoutlms."
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "let scenario = pm.iterationData.get(\"scenario\");\r",
+          "\r",
+          "let statusCode = pm.response.code;\r",
+          "let statusText = pm.response.status;\r",
+          "let method = pm.request.method;\r",
+          "\r",
+          "let expectedCodes = [];\r",
+          "let expectedMessage = \"\";\r",
+          "\r",
+          "//  POSITIVE\r",
+          "if (scenario === \"positive\") {\r",
+          "\r",
+          "    if (method === \"POST\") {\r",
+          "    expectedCodes = [200, 201];\r",
+          "    expectedMessage = [\"OK\", \"Created\"];\r",
+          "\r",
+          "    } \r",
+          "    else if (method === \"GET\") {\r",
+          "        expectedCodes = [200];\r",
+          "        expectedMessage = \"OK\";\r",
+          "    } \r",
+          "    else if (method === \"PUT\") {\r",
+          "        expectedCodes = [200, 204];\r",
+          "        expectedMessage = \"OK\";\r",
+          "    } \r",
+          "    else if (method === \"DELETE\") {\r",
+          "        expectedCodes = [200, 204];\r",
+          "        expectedMessage = \"OK\";\r",
+          "    }\r",
+          "}\r",
+          "\r",
+          "// ❌ NEGATIVE\r",
+          "else if (scenario === \"negative\") {\r",
+          "    expectedCodes = [400, 401, 403, 404, 405, 415];\r",
+          "\r",
+          "    if (statusCode === 400) expectedMessage = \"Bad Request\";\r",
+          "    else if (statusCode === 401) expectedMessage = \"Unauthorized\";\r",
+          "    else if (statusCode === 403) expectedMessage = \"Forbidden\";\r",
+          "    else if (statusCode === 404) expectedMessage = \"Not Found\";\r",
+          "    else if (statusCode === 405) expectedMessage = \"Method Not Allowed\";\r",
+          "    else if (statusCode === 415) expectedMessage = \"Unsupported Media Type\";\r",
+          "    else expectedMessage = statusText;\r",
+          "}\r",
+          "\r",
+          "\r",
+          "//  Status Code\r",
+          "pm.test(\"Status Code Validation\", function () {\r",
+          "    pm.expect(expectedCodes).to.include(statusCode);\r",
+          "});\r",
+          "\r",
+          "//  Status Message\r",
+          "if (expectedMessage) {\r",
+          "    pm.test(\"Status Message Validation\", function () {\r",
+          "        if (Array.isArray(expectedMessage)) {\r",
+          "            pm.expect(expectedMessage).to.include(statusText);\r",
+          "        } else {\r",
+          "            pm.expect(statusText).to.include(expectedMessage);\r",
+          "        }\r",
+          "    });\r",
+          "}\r",
+          "\r",
+          "//  Response Time\r",
+          "pm.test(\"Response time < 8s\", function () {\r",
+          "    pm.expect(pm.response.responseTime).to.be.below(8000);\r",
+          "});\r",
+          "\r",
+          "//  JSON (skip for 204)\r",
+          "let response;\r",
+          "\r",
+          "let responseText = pm.response.text();\r",
+          "\r",
+          "if (statusCode !== 204 && responseText && responseText.length > 0) {\r",
+          "    pm.test(\"Response is valid JSON\", function () {\r",
+          "        try {\r",
+          "            response = pm.response.json();\r",
+          "            pm.expect(response).to.be.an(\"object\");\r",
+          "        } catch (e) {\r",
+          "            console.log(\"Not JSON response, skipping validation\");\r",
+          "        }\r",
+          "    });\r",
+          "}\r",
+          "\r",
+          "//  Token\r",
+          "if (response && response.token) {\r",
+          "    pm.environment.set(\"token\", response.token);\r",
+          "}\r",
+          "\r",
+          "//  Content-Type (skip for 204)\r",
+          "let contentType = pm.response.headers.get(\"Content-Type\");\r",
+          "\r",
+          "if (statusCode !== 204 && contentType) {\r",
+          "    pm.test(\"Content-Type is JSON\", function () {\r",
+          "        pm.expect(contentType.toLowerCase()).to.include(\"application/json\");\r",
+          "    });\r",
+          "}\r",
+          "\r",
+          "// ❌ No server errors\r",
+          "pm.test(\"No server errors\", function () {\r",
+          "    pm.expect(statusCode).to.not.be.oneOf([500, 502, 503]);\r",
+          "});"
+        ]
+      }
+    }
+  ]
+}
